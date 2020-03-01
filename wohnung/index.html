@@ -135,7 +135,7 @@ request.addEventListener('load', function(event) {
         var decryptedimage = CryptoJS.AES.decrypt(requestimages.responseText, secretkey);
         document.getElementById(element).src = 'data:image/png;base64,'+ (decryptedimage.toString(CryptoJS.enc.Utf8));
 			} catch(err) {
-				alert(err);
+
 			}
 	   	} else {
 	      		console.warn(requestimages.statusText, requestimages.responseText);
