@@ -1,0 +1,158 @@
+<html><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Codeply">
+  <title>Mietwohnung Bochum Linden</title>
+  <base target="_self"> 
+
+  <link rel="stylesheet" href="css/normalize.min.css">  
+  
+
+  <link rel="stylesheet" href="css/animate.min.css">
+
+  <link rel="stylesheet" href="">
+
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="css/all.min.css">
+
+  <style></style>
+</head>
+  <script src="css/wow.min.js"></script>
+
+  <script src="css/jquery-3.3.1.slim.min.js"></script>
+
+  <script src="css/bootstrap.bundle.min.js"></script>
+
+  <script src=""></script>
+
+
+
+
+<script src="aes.js"></script>
+<script>
+var request = new XMLHttpRequest();
+
+request.open("GET","encrypted");
+request.addEventListener('load', function(event) {
+   if (request.status >= 200 && request.status < 300) {
+	var secretkey = prompt("Bitte Passwort fuer die Anzeige eingeben!");
+  
+	try {
+		var decrypted = CryptoJS.AES.decrypt(request.responseText, secretkey);
+		document.body.innerHTML = decrypted.toString(CryptoJS.enc.Utf8);
+	} catch(err) {
+		alert("Falsche Passwort eingegeben!");
+	}
+
+	new WOW().init();
+
+    // prevent navigation
+    document.addEventListener("DOMContentLoaded", function() {
+      var links = document.getElementsByTagName("A");
+      for(var i=0; i < links.length; i++) {
+        links[i].addEventListener("click", function(e) {
+          var href = this.getAttribute("href")
+
+          if (!href) {
+            return
+          }
+
+          if (href==='#') {
+            // hash only ('#')
+          }
+          else if (this.hash) {
+            // hash with tag ('#foo')
+            var element = null
+            try {
+              element = document.querySelector(this.hash)
+            }
+            catch(e) {
+            }
+            if (element) {
+              // scroll to anchor
+              e.preventDefault();
+              const top = element.getBoundingClientRect().top + window.pageYOffset
+              window.scrollTo({top, behavior: 'smooth'})
+            }
+            else {
+              // allow javascript routing
+            }
+          }
+          else if (href.indexOf("/p/")===0 || href.indexOf("/v/")===0) {
+            // special multi-page routing
+
+            var l = href.replace('/p/','/v/')
+
+            // reroute
+            e.preventDefault()
+            var newLoc = l + '?from=internal'
+            location.href = newLoc
+          }
+          else if (href.indexOf("./")===0) {
+            // special multi-page routing
+
+            var u = parent.document.URL.split("/")
+            var pn = href.split("/")[1]
+            var plyId = u[u.length-1]
+
+            if (plyId.indexOf('?from')>-1) {
+              // already rerouted this
+              plyId = u[u.length-2]
+            }
+
+            var l = plyId + '/' + pn
+            
+            console.debug(u)
+            console.debug(pn)
+            console.debug('l',l)
+
+            // reroute
+            e.preventDefault()
+            var newLoc = '/v/' + l + '?from=internal'
+            location.href = newLoc
+          }
+          else {
+            // no external links
+            e.preventDefault();
+          }
+          return false;
+        })
+      }
+    }, false);
+
+
+
+	var images = ["aussen", "grundriss", "grundriss_m", "wohnen", "kueche", "schlaf", "kind", "bad", "gaeste", "loggia" , "garage", "keller",];
+	images.forEach(element => {
+		var requestimages = new XMLHttpRequest();
+
+		requestimages.open("GET","bilder_enc/"+element);
+		requestimages.addEventListener('load', function(event) {
+	   	if (requestimages.status >= 200 && requestimages.status < 300) {
+			try {
+
+        var decryptedimage = CryptoJS.AES.decrypt(requestimages.responseText, secretkey);
+        document.getElementById(element).src = 'data:image/png;base64,'+ (decryptedimage.toString(CryptoJS.enc.Utf8));
+			} catch(err) {
+				alert(err);
+			}
+	   	} else {
+	      		console.warn(requestimages.statusText, requestimages.responseText);
+	   	}
+		});
+		requestimages.send();
+	});
+	
+
+   } else {
+      console.warn(request.statusText, request.responseText);
+   }
+});
+request.send();
+</script>
+
+<body class="bg-light">
+</body>
+
+</html>
